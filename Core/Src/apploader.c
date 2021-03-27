@@ -329,22 +329,14 @@ bool AppLoader_verify_firmware() {
 }
 
 void AppLoader_load_application() {
-
+	__disable_irq();
 	const uint32_t app_start_address = 0x08040000;
 	const uint32_t app_jump_address = *((__IO uint32_t*)(app_start_address+4));
 
 	__IO uint32_t *estack = (__IO uint32_t*) app_start_address;
 	uint32_t stack_pointer = *estack;
 
-
 	void(*app)(void) = (void(*)(void)) app_jump_address;
-
-//	HAL_RCC_DeInit();
-//	HAL_DeInit();
-
-//	SysTick->CTRL = 0;
-//	SysTick->LOAD = 0;
-//	SysTick->VAL = 0;
 
 	__set_MSP(stack_pointer);
 	app();
